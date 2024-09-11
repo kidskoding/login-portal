@@ -1,28 +1,27 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule],
   templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.css'
+  styleUrls: ['./user-list.component.css']
 })
 export class UserListComponent implements OnInit {
-  httpClient = inject(HttpClient);
   data: any[] = [];
-  apiUrl = 'http://localhost:3000/';
 
-  ngOnInit(): void { 
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
     this.fetchData();
   }
 
   fetchData() {
-    this.httpClient
-      .get(this.apiUrl)
-      .subscribe((data: any) => {
-        this.data = data;
-      });
+    this.userService.fetchData().subscribe((data: any) => {
+      console.log(data);
+      this.data = data;
+    });
   }
 }
