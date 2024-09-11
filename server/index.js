@@ -1,34 +1,17 @@
 const express = require('express');
 const cors = require('cors');
-const mongoose = require('mongoose');
-
+const db = require('./db');
 const app = express();
-app.use(cors());
-app.use(express.json());
 const port = 3000;
 
-mongoose.set('debug', true);
+app.use(cors());
+app.use(express.json());
 
-mongoose.connect('mongodb://localhost:27017/login-portal', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}).then(function() { 
-    console.log('MongoDB connected!'); 
-}).catch(function(error) {
-    console.error('Error connecting to MongoDB:', error.message);
-});
-
-const userSchema = new mongoose.Schema({
-    username: String,
-    email: String,
-    password: String,
-});
-
-const Item = mongoose.model('User', userSchema);
+app.use('/login', require('./routes/login'));
 
 app.get('/', async function(req, res) {
     try {
-        const items = await Item.find();
+        const items = await db.find();
         console.log('Users found:', items);
         res.json(items);
     } catch(error) {
@@ -38,5 +21,4 @@ app.get('/', async function(req, res) {
 
 app.listen(port, function() {
     console.log('Server is running on port', port);
-    //test commit
 });
